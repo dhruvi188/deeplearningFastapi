@@ -1,0 +1,2 @@
+path/to/plant_disease_model_1_latest.pt filter=lfs diff=lfs merge=lfs -text
+D:/Dhruvi/fastapi3/trying/deeplearningFastapi/plant_disease_model_1_latest.pt filter=lfs diff=lfs merge=lfs -text
