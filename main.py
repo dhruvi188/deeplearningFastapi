@@ -8,10 +8,11 @@ import torch
 import pandas as pd
 import uvicorn
 from typing import Optional
+from fastapi.responses import FileResponse
 
 app = FastAPI()
 
-disease_info = pd.read_csv('disease_info.csv' , encoding='cp1252')
+disease_info = pd.read_csv('disease_info.csv', encoding='cp1252')
 supplement_info = pd.read_csv('supplement_info.csv', encoding='cp1252')
 
 # Load your CNN model here
@@ -74,11 +75,17 @@ async def submit(image: UploadFile = File(...)):
         "supplement_image_url": supplement_image_url,
         "supplement_buy_link": supplement_buy_link
     }
-    
-    # Convert response data to JSON-serializable format
+
     jsonable_response = {key: convert_to_jsonable(value) for key, value in response_data.items()}
     
     return jsonable_response
+
+@app.get("/")
+async def read_root():
+    return FileResponse("index.html")
+
+#if __name__ == "__main__":
+#    uvicorn.run("main:app", host="0.0.0.0", port=int(os.environ.get("PORT", 8000)))
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8001)

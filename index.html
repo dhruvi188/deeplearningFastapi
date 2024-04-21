@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Disease Detection</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>Plant Disease Detection</h1>
+    <form id="uploadForm" enctype="multipart/form-data">
+        <input type="file" id="fileInput" accept="image/*">
+        <button type="submit">Submit</button>
+    </form>
+
+    <div id="resultContainer">
+        <!-- Results will be displayed here -->
+    </div>
+
+    <script>
+        $(document).ready(function(){
+            $('#uploadForm').submit(function(event){
+                event.preventDefault();
+                var formData = new FormData();
+                formData.append('image', $('#fileInput')[0].files[0]);
+
+                $.ajax({
+                    type: 'POST',
+                    url: '/submit',
+                    data: formData,
+                    contentType: false,
+                    processData: false,
+                    success: function(response){
+                        // Update HTML with received JSON data
+                        $('#resultContainer').html(`
+                            <h2>${response.title}</h2>
+                            <p>Description: ${response.description}</p>
+                            <p>Preventive Steps: ${response.prevent}</p>
+                            <img src="${response.image_url}" alt="Disease Image" style="max-width: 300px;">
+                            <h3>Recommended Supplement</h3>
+                            <p>Supplement Name: ${response.supplement_name}</p>
+                            <img src="${response.supplement_image_url}" alt="Supplement Image" style="max-width: 150px;">
+                            <p><a href="${response.supplement_buy_link}" target="_blank">Buy Supplement</a></p>
+                        `);
+                    },
+                    error: function(xhr, status, error){
+                        console.error('Error:', error);
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
